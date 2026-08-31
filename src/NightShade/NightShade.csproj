@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <RootNamespace>NightShade</RootNamespace>
+    <AssemblyName>NightShade</AssemblyName>
+    <UseWPF>true</UseWPF>
+    <!-- タスクトレイ常駐 (NotifyIcon) のためだけに WinForms を参照する -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <!-- WPF と WinForms で同名の型 (Application/Point/Color 等) が衝突するため暗黙 using は使わない -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- WFO0003: WinForms 用の DPI 警告。本アプリは WPF なので app.manifest 側で指定する -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+    <Version>1.0.0</Version>
+    <Product>NightShade</Product>
+    <Description>画面全体を半透明の黒で暗くするタスクトレイ常駐アプリ</Description>
+  </PropertyGroup>
+
+</Project>
