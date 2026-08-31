@@ -5,7 +5,7 @@ namespace NightShade.ViewModels;
 
 /// <summary>
 /// ICommand の汎用実装。
-/// UI（トレイ / ポップアップ / ショートカットキー）はすべてこの Command 経由で
+/// UI（トレイ / ポップアップ）はすべてこの Command 経由で
 /// ViewModel を操作するため、入力手段を追加しても ViewModel は変更不要。
 /// </summary>
 public sealed class RelayCommand : ICommand

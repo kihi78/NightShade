@@ -8,7 +8,7 @@ namespace NightShade.ViewModels;
 
 /// <summary>
 /// アプリ全体の状態を持つ ViewModel。
-/// トレイアイコン / クイックメニュー / グローバルショートカットの
+/// トレイアイコン / クイックメニューの
 /// すべてがこの ViewModel の Command・プロパティを操作する（UI 層とは疎結合）。
 /// </summary>
 public sealed class ShellViewModel : ObservableObject, IDisposable
@@ -55,8 +55,6 @@ public sealed class ShellViewModel : ObservableObject, IDisposable
         ToggleOverlayCommand = new RelayCommand(ToggleOverlay);
         EnableOverlayCommand = new RelayCommand(() => IsOverlayEnabled = true);
         DisableOverlayCommand = new RelayCommand(() => IsOverlayEnabled = false);
-        IncreaseDarknessCommand = new RelayCommand(IncreaseDarkness);
-        DecreaseDarknessCommand = new RelayCommand(DecreaseDarkness);
         OpenQuickMenuCommand = new RelayCommand(_windows.ShowQuickMenu);
         ExitCommand = new RelayCommand(Exit);
     }
@@ -100,7 +98,7 @@ public sealed class ShellViewModel : ObservableObject, IDisposable
         }
     }
 
-    /// <summary>1 段階で変化する暗さの量（グローバルショートカット等で使用）。</summary>
+    /// <summary>スライダーの 1 目盛りで変化する暗さの量。</summary>
     public double OpacityStep
     {
         get => _settings.OpacityStep;
@@ -113,23 +111,6 @@ public sealed class ShellViewModel : ObservableObject, IDisposable
             }
 
             _settings.OpacityStep = clamped;
-            OnPropertyChanged();
-            ScheduleSave();
-        }
-    }
-
-    /// <summary>グローバルショートカットを使うかどうか。</summary>
-    public bool EnableGlobalHotKeys
-    {
-        get => _settings.EnableGlobalHotKeys;
-        set
-        {
-            if (_settings.EnableGlobalHotKeys == value)
-            {
-                return;
-            }
-
-            _settings.EnableGlobalHotKeys = value;
             OnPropertyChanged();
             ScheduleSave();
         }
@@ -152,33 +133,12 @@ public sealed class ShellViewModel : ObservableObject, IDisposable
 
     public ICommand DisableOverlayCommand { get; }
 
-    public ICommand IncreaseDarknessCommand { get; }
-
-    public ICommand DecreaseDarknessCommand { get; }
-
     public ICommand OpenQuickMenuCommand { get; }
 
     public ICommand ExitCommand { get; }
 
     /// <summary>ON/OFF を切り替える。</summary>
     public void ToggleOverlay() => IsOverlayEnabled = !IsOverlayEnabled;
-
-    /// <summary>1 段階暗くする。OFF のときは自動的に ON にする。</summary>
-    public void IncreaseDarkness()
-    {
-        Opacity += OpacityStep;
-        IsOverlayEnabled = true;
-    }
-
-    /// <summary>1 段階明るくする。0 まで下げたら OFF にする。</summary>
-    public void DecreaseDarkness()
-    {
-        Opacity -= OpacityStep;
-        if (Opacity <= MinOpacity + 0.0005)
-        {
-            IsOverlayEnabled = false;
-        }
-    }
 
     /// <summary>設定を即座に保存する。</summary>
     public void SaveNow()

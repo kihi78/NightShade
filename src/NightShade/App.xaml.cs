@@ -1,8 +1,6 @@
 using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Windows;
-using System.Windows.Input;
 using NightShade.Interop;
 using NightShade.Services;
 using NightShade.ViewModels;
@@ -22,7 +20,6 @@ public partial class App : Application
     private OverlayController? _overlayController;
     private WindowService? _windowService;
     private TrayIconService? _trayIconService;
-    private HotKeyService? _hotKeyService;
     private ShellViewModel? _shell;
 
     protected override void OnStartup(StartupEventArgs e)
@@ -50,55 +47,13 @@ public partial class App : Application
 
         _shell = new ShellViewModel(settings, _settingsService, _overlayController, _windowService);
         _windowService.Bind(_shell);
-        _shell.PropertyChanged += OnShellPropertyChanged;
 
         _trayIconService = new TrayIconService(_shell);
         _trayIconService.Initialize();
-
-        _hotKeyService = new HotKeyService();
-        ApplyHotKeys();
-    }
-
-    private void OnShellPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ShellViewModel.EnableGlobalHotKeys))
-        {
-            ApplyHotKeys();
-        }
-    }
-
-    /// <summary>
-    /// ショートカットの割り当て。追加したい場合はここに 1 行足すだけでよい。
-    /// </summary>
-    private void ApplyHotKeys()
-    {
-        if (_hotKeyService is null || _shell is null)
-        {
-            return;
-        }
-
-        _hotKeyService.UnregisterAll();
-
-        if (!_shell.EnableGlobalHotKeys)
-        {
-            return;
-        }
-
-        const uint ctrlShift = NativeMethods.MOD_CONTROL | NativeMethods.MOD_SHIFT;
-
-        _hotKeyService.TryRegister(ctrlShift, Key.Up, () => _shell.IncreaseDarknessCommand.Execute(null));
-        _hotKeyService.TryRegister(ctrlShift, Key.Down, () => _shell.DecreaseDarknessCommand.Execute(null));
-        _hotKeyService.TryRegister(ctrlShift, Key.N, () => _shell.ToggleOverlayCommand.Execute(null));
     }
 
     protected override void OnExit(ExitEventArgs e)
     {
-        if (_shell is not null)
-        {
-            _shell.PropertyChanged -= OnShellPropertyChanged;
-        }
-
-        _hotKeyService?.Dispose();
         _trayIconService?.Dispose();
         _shell?.Dispose();
         _overlayController?.Dispose();

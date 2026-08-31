@@ -9,16 +9,12 @@ public sealed class AppSettings
     /// <summary>暗さ（オーバーレイの不透明度）。0.0 ～ 0.9。</summary>
     public double Opacity { get; set; } = 0.35;
 
-    /// <summary>ショートカット等で 1 段階変化させる量。</summary>
+    /// <summary>スライダーの 1 目盛りで変化させる量。</summary>
     public double OpacityStep { get; set; } = 0.05;
-
-    /// <summary>グローバルショートカットキーを有効にするか。</summary>
-    public bool EnableGlobalHotKeys { get; set; } = true;
 
     public AppSettings Clone() => new()
     {
         Opacity = Opacity,
-        OpacityStep = OpacityStep,
-        EnableGlobalHotKeys = EnableGlobalHotKeys
+        OpacityStep = OpacityStep
     };
 }
